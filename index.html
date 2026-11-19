@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>GTA VI Cloud Beta - 微信云试玩</title>
+  <meta name="description" content="Grand Theft Auto VI 亚太区限时云端串流试玩通道，免下载即点即玩。" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      background-color: #090612;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* GTA 6 假加载页 */
+    #loading-screen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 48px 28px 36px;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255, 72, 147, 0.32), transparent 48%),
+        radial-gradient(circle at 82% 78%, rgba(255, 166, 61, 0.26), transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(114, 46, 209, 0.22), transparent 65%),
+        #090612;
+      z-index: 10;
+      transition: opacity 0.35s ease;
+    }
+
+    .top-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      font-size: 12px;
+      letter-spacing: 0.6px;
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #38ef7d;
+      box-shadow: 0 0 8px #38ef7d;
+      animation: pulse 1.2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.45; transform: scale(0.85); }
+    }
+
+    .brand-box {
+      text-align: center;
+      margin-top: -12px;
+    }
+
+    .vi-logo {
+      font-size: 86px;
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -4px;
+      background: linear-gradient(135deg, #ff7eb3 0%, #ff4f8b 45%, #ffb84d 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 8px 28px rgba(255, 79, 139, 0.45));
+      user-select: none;
+    }
+
+    .game-title {
+      margin-top: 10px;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
+      color: #ffffff;
+    }
+
+    .game-sub {
+      margin-top: 8px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.62);
+      letter-spacing: 1px;
+    }
+
+    .progress-area {
+      width: 100%;
+      max-width: 360px;
+    }
+
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.86);
+    }
+
+    .percent-text {
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+      color: #ff9ec4;
+    }
+
+    .bar-track {
+      width: 100%;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #ff4f8b, #ffb84d);
+      box-shadow: 0 0 12px rgba(255, 95, 145, 0.8);
+      transition: width 0.12s linear;
+    }
+
+    .meta-info {
+      margin-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.45);
+    }
+
+    .footer-note {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.35);
+      text-align: center;
+      letter-spacing: 0.4px;
+    }
+
+    /* 揭示层：海报展示 */
+    #reveal-screen {
+      display: none;
+      width: 100%;
+      min-height: 100vh;
+      background: #e4002b;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      animation: popIn 0.32s ease-out;
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(1.03); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    #poster-img {
+      display: block;
+      width: 100%;
+      max-width: 540px;
+      height: auto;
+    }
+
+    .prank-footer {
+      width: 100%;
+      max-width: 540px;
+      padding: 18px 20px 32px;
+      text-align: center;
+      background: #ffffff;
+      color: #222;
+    }
+
+    .prank-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #d90026;
+      margin-bottom: 6px;
+    }
+
+    .prank-desc {
+      font-size: 13px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <!-- 假加载界面 -->
+  <div id="loading-screen">
+    <div class="top-badge">
+      <span class="dot"></span>
+      <span>ROCKSTAR CLOUD · 亚太体验节点</span>
+    </div>
+
+    <div class="brand-box">
+      <div class="vi-logo">VI</div>
+      <div class="game-title">Grand Theft Auto VI</div>
+      <div class="game-sub">云游戏移动端抢先试玩通道（限免）</div>
+    </div>
+
+    <div class="progress-area">
+      <div class="status-row">
+        <span id="status-text">正在握手云端串流服务器...</span>
+        <span id="percent-text" class="percent-text">0%</span>
+      </div>
+      <div class="bar-track">
+        <div id="bar-fill" class="bar-fill"></div>
+      </div>
+      <div class="meta-info">
+        <span>延迟: 18ms · 1080P 60FPS</span>
+        <span>队列: 免排队通道</span>
+      </div>
+    </div>
+
+    <div class="footer-note">Build 0.9.4-beta · 仅供内部邀请测试使用</div>
+  </div>
+
+  <!-- 真实海报揭示界面 -->
+  <div id="reveal-screen">
+    <img id="poster-img" alt="活动海报" />
+    <div class="prank-footer">
+      <div class="prank-title">GTA 6 还要再等等，但疯狂星期四就在今天！</div>
+      <div class="prank-desc">别玩游戏了，V 我 50 一起啃原味鸡 🍗</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // 后台偷偷预加载海报，避免微信抓图剧透，同时保证弹出时不卡顿
+      const preload = new Image();
+      preload.src = "./poster.jpg";
+
+      const barFill = document.getElementById("bar-fill");
+      const percentText = document.getElementById("percent-text");
+      const statusText = document.getElementById("status-text");
+      const loadingScreen = document.getElementById("loading-screen");
+      const revealScreen = document.getElementById("reveal-screen");
+      const posterImg = document.getElementById("poster-img");
+
+      const stages = [
+        { p: 18, text: "正在分配云端 GPU 算力节点..." },
+        { p: 42, text: "内测邀请校验通过，正在初始化画面流..." },
+        { p: 73, text: "正在加载 Vice City 地图资源..." },
+        { p: 92, text: "画面同步完成，正在切入游戏画面..." }
+      ];
+
+      let progress = 0;
+
+      const timer = setInterval(() => {
+        // 模拟真实加载的轻微顿挫感
+        const step = progress < 70 ? Math.floor(Math.random() * 6) + 3 : Math.floor(Math.random() * 4) + 2;
+        progress = Math.min(100, progress + step);
+
+        barFill.style.width = progress + "%";
+        percentText.textContent = progress + "%";
+
+        for (let i = stages.length - 1; i >= 0; i--) {
+          if (progress >= stages[i].p) {
+            statusText.textContent = stages[i].text;
+            break;
+          }
+        }
+
+        if (progress >= 100) {
+          clearInterval(timer);
+          setTimeout(() => {
+            posterImg.src = preload.src;
+            document.title = "疯狂星期四！V我50 🍗";
+            loadingScreen.style.opacity = "0";
+            setTimeout(() => {
+              loadingScreen.style.display = "none";
+              revealScreen.style.display = "flex";
+            }, 320);
+          }, 260);
+        }
+      }, 95);
+    })();
+  </script>
+</body>
+</html>
